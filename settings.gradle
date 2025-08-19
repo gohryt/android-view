@@ -13,6 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-include ':app'
 include ':library'
+include ':app'
 include ':masonry-app'
