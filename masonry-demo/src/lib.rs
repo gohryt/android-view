@@ -12,12 +12,13 @@ use android_view::{
 };
 use masonry::{
     core::{ErasedAction, NewWidget, Properties, Widget, WidgetId},
-    properties::Padding,
+    properties::{Padding, types::Length},
     theme::default_property_set,
     widgets::{Button, ButtonPress, Flex, Label, Portal, TextAction, TextArea, TextInput},
 };
 use masonry_android::{AppDriver, DriverCtx};
 use std::{ffi::c_void, sync::Arc};
+use tracing::info;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 const WIDGET_SPACING: f64 = 5.0;
@@ -59,10 +60,10 @@ fn make_widget_tree() -> impl Widget {
             .with_child(NewWidget::new_with_props(
                 Flex::row()
                     .with_flex_child(TextInput::new("").with_auto_id(), 1.0)
-                    .with_child(Button::new("Add task").with_auto_id()),
+                    .with_child(Button::with_text("Add task").with_auto_id()),
                 Properties::new().with(Padding::all(WIDGET_SPACING)),
             ))
-            .with_spacer(WIDGET_SPACING)
+            .with_spacer(Length::px(WIDGET_SPACING))
             .with_auto_id(),
     )
 }
@@ -93,9 +94,9 @@ pub unsafe extern "system" fn JNI_OnLoad(vm: *mut RawJavaVM, _: *mut c_void) -> 
     // We therefore ignore the error
     // Ideally, we'd only ignore the SetLoggerError, but the only way that's possible is to inspect
     // `Debug/Display` on the TryInitError, which is awful.
-    let _ = tracing_subscriber::registry()
+    tracing_subscriber::registry()
         .with(tracing_android_trace::AndroidTraceLayer::new())
-        .try_init();
+        .init();
 
     let vm = unsafe { JavaVM::from_raw(vm) }.unwrap();
     let mut env = vm.get_env().unwrap();

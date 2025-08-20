@@ -228,6 +228,7 @@ impl<Driver: AppDriver> MasonryViewPeer<Driver> {
                     };
                     info!("Widget selected in inspector: {widget_id} - {display_name}");
                 }
+                RenderRootSignal::ClipboardStore(_) => {}
             }
         }
 
@@ -243,14 +244,16 @@ impl<Driver: AppDriver> MasonryViewPeer<Driver> {
 
         let (scene, tree_update) = self.state.render_root.redraw();
 
-        if let Some(events) = self
-            .state
-            .accesskit_adapter
-            .update_if_active(|| tree_update)
-        {
-            ctx.push_dynamic_deferred_callback(move |env, view| {
-                events.raise(env, &view.0);
-            });
+        if let Some(tree_update) = tree_update {
+            if let Some(events) = self
+                .state
+                .accesskit_adapter
+                .update_if_active(|| tree_update)
+            {
+                ctx.push_dynamic_deferred_callback(move |env, view| {
+                    events.raise(env, &view.0);
+                });
+            }
         }
 
         let android_ctx = ctx.view.context(&mut ctx.env);
@@ -317,7 +320,7 @@ impl<Driver: AppDriver> MasonryViewPeer<Driver> {
         // Queue the texture to be presented on the surface.
         surface_texture.present();
 
-        device_handle.device.poll(wgpu::Maintain::Poll);
+        _ = device_handle.device.poll(wgpu::PollType::Poll);
     }
 
     fn on_key_event<'local>(
@@ -347,7 +350,7 @@ impl<Driver: AppDriver> MasonryViewPeer<Driver> {
         if handler.requested_initial_tree {
             self.state
                 .render_root
-                .handle_window_event(WindowEvent::RebuildAccessTree);
+                .handle_window_event(WindowEvent::EnableAccessTree);
             self.handle_signals(ctx);
         }
         result
