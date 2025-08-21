@@ -22,7 +22,7 @@ cargo install cargo-ndk
 ### Simple editor demo
 
 ```bash
-cargo ndk -t arm64-v8a -o app/src/main/jniLibs/ build -p android-view-demo
+cargo ndk -t arm64-v8a -p 30 -o app/src/main/jniLibs/ build -p android-view-demo
 ./gradlew build
 ./gradlew installDebug
 adb shell am start -n org.linebender.android.viewdemo/.DemoActivity
@@ -33,7 +33,7 @@ adb shell run-as org.linebender.android.viewdemo logcat -v color
 ### Masonry demo
 
 ```bash
-cargo ndk -t arm64-v8a -o masonry-app/src/main/jniLibs/ build -p android-view-masonry-demo
+cargo ndk -t arm64-v8a -p 30 -o masonry-app/src/main/jniLibs/ build -p android-view-masonry-demo
 ./gradlew build
 ./gradlew installDebug
 adb shell am start -n org.linebender.android.masonrydemo/.DemoActivity
