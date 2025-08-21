@@ -1,4 +1,7 @@
-/target
+.idea
+.vscode
 .gradle
 build
 jniLibs
+local.properties
+target
