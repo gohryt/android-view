@@ -39,14 +39,14 @@ afterEvaluate {
             release(MavenPublication) {
                 from components.release
 
-                groupId = 'com.github.gohryt'
+                groupId = 'com.github.rust-mobile'
                 artifactId = 'rustview'
                 version = '1.0.0'
 
                 pom {
                     name = 'RustView'
                     description = 'A library for implementing Android views in Rust'
-                    url = 'https://github.com/gohryt/android-view'
+                    url = 'https://github.com/rust-mobile/android-view'
 
                     licenses {
                         license {
